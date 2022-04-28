@@ -47,7 +47,6 @@ function randomColor() {
 handleSpin.onclick = function() {
     const _text = $('.root textarea')
     const text = Replace(_text.value)
-    console.log(text)
     backDrop.innerHTML = text.origin
     let newChild = document.createElement("div")
     newChild.setAttribute("class", "child")
