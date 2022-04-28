@@ -1,0 +1,43 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 16px;
+}
+.root textarea {
+  width: calc(100% - 18px);
+  height: 200px;
+  padding: 8px;
+  outline: unset;
+}
+.root .container > button {
+  display: block;
+  margin: auto;
+  width: 100px;
+  /* margin-bottom: 10px; */
+}
+.result {
+  height: calc(100vh - 264px);
+  overflow-y: scroll;
+}
+.result .child {
+  margin: 10px 10px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #eee;
+  position: relative;
+  overflow: hidden;
+}
+.result .child .closeBtn {
+  --button-size: 8px;
+  position: absolute;
+  right: var(--button-size);
+  top: var(--button-size);
+}
+.result .child span {
+  background-color: yellow;
+}
+.result .child.set-height {
+  height: 22px;
+}
