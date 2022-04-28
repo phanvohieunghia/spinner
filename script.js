@@ -59,7 +59,7 @@ handleSpin.onclick = function() {
     btnResult.textContent = 'toggle'
     $('.result .child').append(btnResult)
     $$('.result .child .closeBtn').forEach((element, i) => {
-        element.onclick = function (e) {
+        element.onclick = function () {
             $$('.result .child')[i].classList.toggle('set-height')
         }
     })

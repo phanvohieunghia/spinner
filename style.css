@@ -6,21 +6,40 @@
   box-sizing: border-box;
 }
 body {
-  background-color: #ccc;
+  background-color: #ddd;
 }
 span {
   background-color: yellow;
   border-radius: 6px;
 }
-
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: #3dbdee;
+}
+.root {
+  position: relative;
+}
 .root .input {
   height: 200px;
 }
 .root .input > button {
   display: block;
-  margin: auto;
-  width: 100px;
-  border: 1px solid #ccc;
+  width: 140px;
+  margin: 4px auto 0;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  transition: 0.3s linear;
+}
+.root .input > button:hover {
+  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
+  background-size: 100% 100%;
+  background-color: #3dbdee;
 }
 .root .input .container {
   position: relative;
@@ -35,7 +54,7 @@ span {
   left: var(--position-div);
   bottom: var(--position-div);
   z-index: -1;
-  border: 1px solid #685972;
+  border: 1px solid #000;
   overflow: auto;
   pointer-events: none;
   padding: 8px;
@@ -50,11 +69,10 @@ span {
   resize: none;
   z-index: 10;
 }
-
-
 .result {
-  height: calc(100vh - 200px);
+  height: calc(100vh - 200px - 8px);
   overflow-y: scroll;
+  margin-top: 8px;
 }
 .result .child {
   margin: 10px 10px 0;
@@ -65,6 +83,9 @@ span {
   position: relative;
   overflow: hidden;
 }
+.result .child:first-child {
+  margin-top: 0;
+}
 .result .child .closeBtn {
   --button-size: 8px;
   position: absolute;
@@ -72,5 +93,15 @@ span {
   top: var(--button-size);
 }
 .result .child.set-height {
-  height: 22px;
+  height: 38px;
+}
+.logo {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+}
+.logo img {
+  --logo-size: 40px;
+  width: var(--logo-size);
+  height: var(--logo-size);
 }
