@@ -9,15 +9,9 @@ const handleSpin = $('.root button')
 const result = $('.result')
 function handleScroll() {
     textArea.onscroll = function (e) {
-        var scrollTop = textArea.scrollTop;
-        console.log(scrollTop)
-        backDrop.scrollTop = scrollTop;
+        backDrop.scrollTop = textArea.scrollTop;
     }
 }
-function renderBackdrop(text) {
-
-}
-
 function randomCustom(length) {
     let randomNumber = Math.floor(Math.random() * length)
     return randomNumber
@@ -70,5 +64,6 @@ handleSpin.onclick = function() {
             $$('.result .child')[i].classList.toggle('set-height')
         }
     })
+    backDrop.scrollTop = textArea.scrollTop;
 }
 handleScroll()

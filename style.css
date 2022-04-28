@@ -8,6 +8,11 @@
 body {
   background-color: #ccc;
 }
+span {
+  background-color: yellow;
+  border-radius: 6px;
+}
+
 .root .input {
   height: 200px;
 }
@@ -64,9 +69,6 @@ body {
   position: absolute;
   right: var(--button-size);
   top: var(--button-size);
-}
-span {
-  background-color: yellow;
 }
 .result .child.set-height {
   height: 22px;
