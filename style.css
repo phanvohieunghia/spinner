@@ -47,7 +47,7 @@ span {
 #root .input .container {
   position: relative;
   height: calc(100% - 28px);
-
+  margin: 8px 8px 0;
 }
 #root .input .container .backdrop {
   --position-div: 0;
@@ -57,11 +57,12 @@ span {
   left: var(--position-div);
   bottom: var(--position-div);
   z-index: -1;
-  border: 1px solid #000;
+  border: 1px solid #999;
   overflow: auto;
   pointer-events: none;
   padding: 8px;
   color: transparent;
+  border-radius: 8px;
 }
 #root .input .container > textarea {
   width: 100%;
@@ -72,6 +73,7 @@ span {
   resize: none;
   z-index: 10;
   user-select: none;
+  border-color: transparent;
 }
 #root .space {
   background-color: #3dbdee;
@@ -80,7 +82,7 @@ span {
 }
 
 #root .result {
-  height: calc(100vh - 200px - 4px);
+  height: calc(100vh - 200px - 4px - 8px) ;
   overflow-y: scroll;
   padding: 8px;
 }
@@ -105,16 +107,22 @@ span {
   right: var(--button-size);
   top: var(--button-size);
   user-select: none;
+  border: 1px solid #ccc;
 }
 #root .result .child.set-height {
-  max-height: 38px;
+  max-height: 34px;
 }
 #root .result .child .title {
+  padding-bottom: 2px;
+  border-bottom: 1px solid #aaa;
   text-align: center;
   color: #1a6481;
   user-select: none;
 }
-.logo {
+#root .result .child .content {
+  padding-top: 4px;
+}
+  .logo {
   position: absolute;
   right: 12px;
   bottom: 12px;

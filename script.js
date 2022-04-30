@@ -7,17 +7,12 @@ const inputBox = $('#root .input')
 const resultBox = $('#root .result')
 const textArea = $('#root .input .container > textarea')
 const backDrop = $('#root .input .container .backdrop')
-const handleSpin = $('#root button')
+const spinButton = $('#root .spin')
+const resetButton = $('#root .reset')
 const spaceBox = $('#root .space')
 
-function handleScroll() {
-	textArea.onscroll = function (e) {
-		backDrop.scrollTop = textArea.scrollTop;
-	}
-}
 function randomCustom(length) {
-	let randomNumber = Math.floor(Math.random() * length)
-	return randomNumber
+	return Math.floor(Math.random() * length)
 }
 function Replace(text) {
 	let result = {
@@ -47,39 +42,55 @@ function randomColor() {
 	let b = Math.floor(Math.random() * 56 + 200);
 	return `rgb(${r},${g},${b})`
 }
-let spinNumber = 0;
-handleSpin.onclick = function () {
-	const _text = $('#root textarea')
-	const text = Replace(_text.value)
-	backDrop.innerHTML = text.origin
-
-	let titleChild = document.createElement('div')
-	titleChild.setAttribute('class', 'title')
-	titleChild.innerHTML = 'Spin' + (spinNumber + 1)
-	spinNumber++
-
-	let contentChild = document.createElement('div')
-	contentChild.setAttribute('class', 'content')
-	contentChild.innerHTML = text.replace
-
-	let newChild = document.createElement('div')
-	newChild.setAttribute('class', 'child')
-	newChild.style.backgroundColor = randomColor()
-	newChild.append(titleChild, contentChild)
-
-	resultBox.prepend(newChild)
-
-	let btnResult = document.createElement('button')
-	btnResult.setAttribute('class', 'toggleBtn')
-	btnResult.textContent = 'toggle'
-
-	$('.result .child').append(btnResult)
-	$$('.result .child .closeBtn').forEach((element, i) => {
-		element.onclick = function () {
-			$$('.result .child')[i].classList.toggle('set-height')
+function handleReset() {
+	resetButton.onclick = function () {
+		console.log('click')
+		$('#root .input .container > textarea').value = ''
+	}
+}
+function handleSpin() {
+	let spinNumber = 0;
+	spinButton.onclick = function () {
+		if (!textArea.value) {
+			alert('Nhập nội dung trước khi khi spin')
+			return
 		}
-	})
-	backDrop.scrollTop = textArea.scrollTop;
+		const _text = $('#root textarea')
+		const text = Replace(_text.value)
+		backDrop.innerHTML = text.origin
+
+		let titleChild = document.createElement('div')
+		titleChild.setAttribute('class', 'title')
+		titleChild.innerHTML = 'Spin' + (spinNumber + 1)
+		spinNumber++
+
+		let contentChild = document.createElement('div')
+		contentChild.setAttribute('class', 'content')
+		contentChild.innerHTML = text.replace
+
+		let newChild = document.createElement('div')
+		newChild.setAttribute('class', 'child')
+		newChild.style.backgroundColor = randomColor()
+		newChild.append(titleChild, contentChild)
+
+		resultBox.prepend(newChild)
+
+		let btnResult = document.createElement('button')
+		btnResult.setAttribute('class', 'toggleBtn')
+		btnResult.textContent = 'toggle'
+		$('.result .child').append(btnResult)
+		$$('.result .child .toggleBtn').forEach((element, i) => {
+			element.onclick = function () {
+				$$('.result .child')[i].classList.toggle('set-height')
+			}
+		})
+		backDrop.scrollTop = textArea.scrollTop;
+	}
+}
+function handleScroll() {
+	textArea.onscroll = function (e) {
+		backDrop.scrollTop = textArea.scrollTop;
+	}
 }
 function handleRowResize() {
 	spaceBox.addEventListener('mousedown', mouseDown)
@@ -88,7 +99,6 @@ function handleRowResize() {
 		window.addEventListener('mouseup', mouseUp)
 		let prevY = e.clientY
 		function mouseMove(e) {
-			console.log(prevY / window.innerHeight)
 			if (prevY / window.innerHeight <= 0.9 && prevY / window.innerHeight >= 0.1) {
 				let newY = e.clientY - prevY;
 				const rectInputBox = inputBox.getBoundingClientRect()
@@ -105,5 +115,8 @@ function handleRowResize() {
 		}
 	}
 }
+
 handleScroll()
+handleReset()
 handleRowResize()
+handleSpin()
