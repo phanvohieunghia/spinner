@@ -1,5 +1,4 @@
 import SpinData from './data.json' assert { type: "json" }
-
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
@@ -59,6 +58,14 @@ function handleReset() {
 		}
 	}
 }
+function createElementCustom(typeElement, classValue = null, text = '', srcValue = null, draggableValue = null) {
+	let x = document.createElement(typeElement)
+	classValue && x.setAttribute('class', classValue)
+	srcValue && x.setAttribute('src', srcValue)
+	draggableValue && x.setAttribute('draggable', draggableValue)
+	x.textContent = text
+	return x
+}
 function handleSpin() {
 	let spinNumber = 0;
 	spinButton.onclick = function () {
@@ -70,32 +77,36 @@ function handleSpin() {
 		const text = Replace(_text.value)
 		backDrop.innerHTML = text.origin
 
-		let titleChild = document.createElement('div')
-		titleChild.setAttribute('class', 'title')
-		titleChild.innerHTML = 'Spin' + (spinNumber + 1)
+
+		let titleChild = createElementCustom('div', 'title')
+		titleChild.append(createElementCustom('img', 'left', '', './grip-dots.svg'))
+		titleChild.append(createElementCustom('span', 'mid', `Spin ${spinNumber + 1}`))
 		spinNumber++
-
-		let contentChild = document.createElement('div')
-		contentChild.setAttribute('class', 'content')
-		contentChild.innerHTML = text.replace
-
-		let newChild = document.createElement('div')
-		newChild.setAttribute('class', 'child')
+		titleChild.append(createElementCustom('button', 'right bd93f9', 'Toggle'))
+		let contentChild = createElementCustom('div', 'content', text.replace)
+		let newChild = createElementCustom('div', 'child', '', null, null)
 		newChild.style.backgroundColor = randomColor()
 		newChild.append(titleChild, contentChild)
-
 		resultBox.prepend(newChild)
 
-		let btnResult = document.createElement('button')
-		btnResult.setAttribute('class', 'toggleBtn')
-		btnResult.textContent = 'toggle'
-		$('.result .child').append(btnResult)
-		$$('.result .child .toggleBtn').forEach((element, i) => {
+		$$('.result .child .title .right').forEach((element, i) => {
 			element.onclick = function () {
-				$$('.result .child')[i].classList.toggle('set-height')
+				element.parentElement.parentElement.classList.toggle('set-height')
 			}
 		})
 		backDrop.scrollTop = textArea.scrollTop
+
+		$$('.result .child .title .left').forEach((element) => {
+			element.addEventListener('mousedown', function () {
+				console.log('up', element)
+				element.parentElement.parentElement.setAttribute('draggable', 'true')
+				handleDragging()
+			})
+			element.addEventListener('mouseup', function () {
+				console.log('down', element)
+				element.parentElement.parentElement.removeAttribute('draggable')
+			})
+		})
 	}
 }
 function handleScroll() {
@@ -126,7 +137,39 @@ function handleRowResize() {
 		}
 	}
 }
-
+function handleDragging() {
+	$$('.result .child').forEach(child => {
+		child.addEventListener('dragstart', function () {
+			child.classList.add('dragging')
+		})
+		child.addEventListener('dragend', function () {
+			child.classList.remove('dragging')
+		})
+	})
+	const currentResultBox = $('.result')
+	currentResultBox.addEventListener('dragover', function (e) {
+		e.preventDefault()
+		const afterElement = getDragAfterElement(currentResultBox, e.clientY)
+		const child = $('.dragging')
+		if (afterElement == undefined) {
+			currentResultBox.append(child)
+		} else {
+			currentResultBox.insertBefore(child, afterElement)
+		}
+	})
+}
+function getDragAfterElement(child, y) {
+	const childs = [...child.querySelectorAll('.result .child:not(.dragging)')]
+	return childs.reduce((closest, current) => {
+		const box = current.getBoundingClientRect()
+		const offset = y - box.top - box.height / 2
+		if (offset < 0 && offset > closest.offset) {
+			return { offset: offset, element: current }
+		} else {
+			return closest
+		}
+	}, { offset: Number.NEGATIVE_INFINITY }).element
+}
 handleScroll()
 handleReset()
 handleRowResize()

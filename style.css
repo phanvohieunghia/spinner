@@ -19,6 +19,21 @@ span {
   border-radius: 6px;
   background-color: #3dbdee;
 }
+.bd93f9 {
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  transition: 0.3s linear;
+  user-select: none;
+  cursor: pointer;
+}
+.bd93f9:hover {
+  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
+  background-size: 100% 100%;
+  background-color: #3dbdee;
+}
 #root {
   position: relative;
 }
@@ -36,19 +51,6 @@ span {
 }
 #root .input .btn > button {
   width: 100px;
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
-  background-size: 0% 100%;
-  background-repeat: no-repeat;
-  transition: 0.3s linear;
-  user-select: none;
-}
-
-#root .input .btn > button:hover {
-  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
-  background-size: 100% 100%;
-  background-color: #3dbdee;
 }
 #root .input .container {
   position: relative;
@@ -104,31 +106,39 @@ span {
   max-height: 500px;
   transition: all 0.5s ease;
 }
+#root .result .child.dragging {
+  opacity: 0.5;
+}
 #root .result .child:first-child {
   margin-top: 0;
-}
-#root .result .child .toggleBtn {
-  --button-size: 8px;
-  position: absolute;
-  right: var(--button-size);
-  top: var(--button-size);
-  user-select: none;
-  border: 1px solid #ccc;
 }
 #root .result .child.set-height {
   max-height: 34px;
 }
 #root .result .child .title {
+  display: flex;
+  justify-content: space-between;
+  justify-items: center;
   padding-bottom: 2px;
   border-bottom: 1px solid #aaa;
   text-align: center;
   color: #1a6481;
   user-select: none;
 }
+#root .result .child .title .left {
+  cursor: move;
+}
+#root .result .child .title .mid {
+  background-color: unset;
+  font-weight: 700;
+}
+#root .result .child .title .right {
+  padding: 0 8px;
+}
 #root .result .child .content {
   padding-top: 4px;
 }
-  .logo {
+.logo {
   position: absolute;
   right: 12px;
   bottom: 12px;
