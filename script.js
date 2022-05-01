@@ -1,4 +1,4 @@
-import SpinData from './data.json' assert { type: "json" };
+import SpinData from './data.json' assert { type: "json" }
 
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
@@ -37,15 +37,26 @@ function Replace(text) {
 	return result
 }
 function randomColor() {
-	let r = Math.floor(Math.random() * 56 + 200);
-	let g = Math.floor(Math.random() * 56 + 200);
-	let b = Math.floor(Math.random() * 56 + 200);
+	let r = Math.floor(Math.random() * 56 + 200)
+	let g = Math.floor(Math.random() * 56 + 200)
+	let b = Math.floor(Math.random() * 56 + 200)
 	return `rgb(${r},${g},${b})`
 }
 function handleReset() {
 	resetButton.onclick = function () {
-		console.log('click')
-		$('#root .input .container > textarea').value = ''
+		const currentResult = $('#root .result')
+		const currentTextArea = $('#root .input .container > textarea')
+		const currentBackdrop = $('#root .input .container .backdrop')
+		if (!currentResult.hasChildNodes()
+			&& !currentTextArea.value
+			&& !currentBackdrop.hasChildNodes())
+			return
+		let text = "Thao tác này sẽ làm mất những lần spin trước đó.\n Nhấn OK để tiếp tục."
+		if (confirm(text)) {
+			$('#root .input .container > textarea').value = ''
+			$('#root .input .container .backdrop').innerHTML = ''
+			$('#root .result').innerHTML = ''
+		}
 	}
 }
 function handleSpin() {
@@ -84,12 +95,12 @@ function handleSpin() {
 				$$('.result .child')[i].classList.toggle('set-height')
 			}
 		})
-		backDrop.scrollTop = textArea.scrollTop;
+		backDrop.scrollTop = textArea.scrollTop
 	}
 }
 function handleScroll() {
 	textArea.onscroll = function (e) {
-		backDrop.scrollTop = textArea.scrollTop;
+		backDrop.scrollTop = textArea.scrollTop
 	}
 }
 function handleRowResize() {
@@ -103,8 +114,8 @@ function handleRowResize() {
 				let newY = e.clientY - prevY;
 				const rectInputBox = inputBox.getBoundingClientRect()
 				const rectResultBox = resultBox.getBoundingClientRect()
-				inputBox.style.height = rectInputBox.height + newY + 'px';
-				resultBox.style.height = rectResultBox.height - newY + 'px';
+				inputBox.style.height = rectInputBox.height + newY + 'px'
+				resultBox.style.height = rectResultBox.height - newY + 'px'
 				prevY = e.clientY
 			}
 			prevY = e.clientY

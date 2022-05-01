@@ -28,8 +28,13 @@ span {
 #root .input .btn {
   padding: 4px 0;
   text-align: center;
+  margin: 0 8px;
 }
-  #root .input .btn > button {
+#root .input .btn .reset {
+  float: right;
+
+}
+#root .input .btn > button {
   width: 100px;
   border: 1px solid #aaa;
   border-radius: 4px;
@@ -39,6 +44,7 @@ span {
   transition: 0.3s linear;
   user-select: none;
 }
+
 #root .input .btn > button:hover {
   background-image: linear-gradient(to left, #3dbdee, #3dbdee);
   background-size: 100% 100%;
