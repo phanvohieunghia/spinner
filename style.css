@@ -65,12 +65,14 @@ span {
   left: var(--position-div);
   bottom: var(--position-div);
   z-index: -1;
-  border: 1px solid #999;
+  border: 1px solid #ccc;
   overflow: auto;
   pointer-events: none;
   padding: 8px;
   color: transparent;
   border-radius: 8px;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 #root .input .container > textarea {
   width: 100%;
@@ -99,15 +101,15 @@ span {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #eee;
   position: relative;
   overflow: hidden;
   overflow-y: scroll;
   max-height: 500px;
   transition: all 0.5s ease;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 #root .result .child.dragging {
-  opacity: 0.5;
+  opacity: 0.2;
 }
 #root .result .child:first-child {
   margin-top: 0;

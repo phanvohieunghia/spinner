@@ -63,7 +63,7 @@ function createElementCustom(typeElement, classValue = null, text = '', srcValue
 	classValue && x.setAttribute('class', classValue)
 	srcValue && x.setAttribute('src', srcValue)
 	draggableValue && x.setAttribute('draggable', draggableValue)
-	x.textContent = text
+	x.innerHTML = text
 	return x
 }
 function handleSpin() {
@@ -76,8 +76,6 @@ function handleSpin() {
 		const _text = $('#root textarea')
 		const text = Replace(_text.value)
 		backDrop.innerHTML = text.origin
-
-
 		let titleChild = createElementCustom('div', 'title')
 		titleChild.append(createElementCustom('img', 'left', '', './grip-dots.svg'))
 		titleChild.append(createElementCustom('span', 'mid', `Spin ${spinNumber + 1}`))
@@ -87,6 +85,13 @@ function handleSpin() {
 		let newChild = createElementCustom('div', 'child', '', null, null)
 		newChild.style.backgroundColor = randomColor()
 		newChild.append(titleChild, contentChild)
+		newChild.firstChild.firstChild.addEventListener('mousedown', function (e) {
+			e.target.parentElement.parentElement.setAttribute('draggable', 'true')
+			handleDragging()
+		})
+		newChild.firstChild.firstChild.addEventListener('mouseup', function (e) {
+			e.target.parentElement.parentElement.removeAttribute('draggable')
+		})
 		resultBox.prepend(newChild)
 
 		$$('.result .child .title .right').forEach((element, i) => {
@@ -95,18 +100,6 @@ function handleSpin() {
 			}
 		})
 		backDrop.scrollTop = textArea.scrollTop
-
-		$$('.result .child .title .left').forEach((element) => {
-			element.addEventListener('mousedown', function () {
-				console.log('up', element)
-				element.parentElement.parentElement.setAttribute('draggable', 'true')
-				handleDragging()
-			})
-			element.addEventListener('mouseup', function () {
-				console.log('down', element)
-				element.parentElement.parentElement.removeAttribute('draggable')
-			})
-		})
 	}
 }
 function handleScroll() {
