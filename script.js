@@ -66,6 +66,13 @@ function createElementCustom(typeElement, classValue = null, text = '', srcValue
 	x.innerHTML = text
 	return x
 }
+function handleChangeTextare() {
+	textArea.oninput = function () {
+		const text = Replace($('#root textarea').value)
+		backDrop.innerHTML = text.origin
+	}
+}
+handleChangeTextare()
 function handleSpin() {
 	let spinNumber = 0;
 	spinButton.onclick = function () {
@@ -73,8 +80,7 @@ function handleSpin() {
 			alert('Nhập nội dung trước khi khi spin')
 			return
 		}
-		const _text = $('#root textarea')
-		const text = Replace(_text.value)
+		const text = Replace($('#root textarea').value)
 		backDrop.innerHTML = text.origin
 		let titleChild = createElementCustom('div', 'title')
 		titleChild.append(createElementCustom('img', 'left', '', './grip-dots.svg'))
