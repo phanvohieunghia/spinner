@@ -8,9 +8,10 @@
 body {
   background-color: #ddd;
 }
-span {
-  background-color: yellow;
+.bd93f10 {
+  background-color: rgb(29, 243, 136);
   border-radius: 6px;
+  font-size: inherit;
 }
 ::-webkit-scrollbar {
   width: 4px;
@@ -37,27 +38,36 @@ span {
 #root {
   position: relative;
 }
-#root .input {
+#root .top {
   height: 200px;
 }
-#root .input .btn {
+#root .top .btn {
   padding: 4px 0;
   text-align: center;
   margin: 0 8px;
 }
-#root .input .btn .reset {
+#root .top .btn .reset {
   float: right;
 
 }
-#root .input .btn > button {
+#root .top .btn > button {
   padding: 4px 20px;
 }
-#root .input .container {
+#root .top .input {
   position: relative;
   height: calc(100% - 36px);
   margin: 8px 8px 0;
+  background-color: red;
+  padding: 8px;
+  outline: unset;
+  user-select: none;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  overflow-y: scroll;
+
 }
-#root .input .container .backdrop {
+#root .top .input .backdrop {
   --position-div: 0;
   position: absolute;
   top: var(--position-div);
@@ -74,7 +84,7 @@ span {
   background: #fff;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
-#root .input .container > textarea {
+#root .top .input > textarea {
   width: 100%;
   height: 100%;
   padding: 8px;

@@ -1,10 +1,10 @@
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
-const inputBox = $('#root .input')
+const topBox = $('#root .top')
 const resultBox = $('#root .result')
-const textArea = $('#root .input .container > textarea')
-const backDrop = $('#root .input .container .backdrop')
+const inputBox = $('#root .top .input')
+
 const spinButton = $('#root .spin')
 const resetButton = $('#root .reset')
 const spaceBox = $('#root .space')
@@ -26,8 +26,8 @@ function Replace(text) {
 	spinnerData.forEach(array => {
 		array.some((string, i, strings) => {
 			var pretext = replaceText
-			replaceText = replaceText.replace(string, '<span>' + strings[randomCustom(strings.length)] + '</span>&nbsp;')
-			originText = originText.replace(string, '<span>' + string + '</span><code>&nbsp;</code>')
+			replaceText = replaceText.replace(string, `<span class="bd93f10">${strings[randomCustom(strings.length)]}</span>`)
+			originText = originText.replace(string, `<span class="bd93f10">${string}</span>`)
 			if (pretext !== replaceText) return true
 		})
 	})
@@ -47,16 +47,16 @@ function randomColor() {
 function handleReset() {
 	resetButton.onclick = function () {
 		const currentResult = $('#root .result')
-		const currentTextArea = $('#root .input .container > textarea')
-		const currentBackdrop = $('#root .input .container .backdrop')
+		const currentTextArea = $('#root .top .container > textarea')
+		const currentBackdrop = $('#root .top .container .backdrop')
 		if (!currentResult.hasChildNodes()
 			&& !currentTextArea.value
 			&& !currentBackdrop.hasChildNodes())
 			return
 		let text = "Thao tác này sẽ làm mất những lần spin trước đó.\n Nhấn OK để tiếp tục."
 		if (confirm(text)) {
-			$('#root .input .container > textarea').value = ''
-			$('#root .input .container .backdrop').innerHTML = ''
+			$('#root .top .container > textarea').value = ''
+			$('#root .top .container .backdrop').innerHTML = ''
 			$('#root .result').innerHTML = ''
 		}
 	}
@@ -69,21 +69,41 @@ function createElementCustom(typeElement, classValue = null, text = '', srcValue
 	element.innerHTML = text
 	return element
 }
-function handleChangeTextare() {
-	textArea.oninput = function () {
-		const text = Replace($('#root textarea').value)
-		backDrop.innerHTML = text.origin
-		console.log(text.origin)
+// function handleChangeTextare() {
+// 	inputBox.onchange = function () {
+// 		console.log('change')
+// 		// const text = Replace($('#root textarea').value)
+// 		// backDrop.innerHTML = text.origin
+// 	}
+// }
+function recursiveSpin(element, type) {
+	element.childNodes.forEach(childElement => {
+		// console.log(childElement)
+		if (childElement.nodeValue) {
+			element.innerHTML = Replace(childElement.nodeValue)[type]
+		}
+		recursiveSpin(childElement, type)
+	})
+}
+function handleSpin2() {
+	spinButton.onclick = function () {
+		if (!inputBox.textContent) {
+			alert('Nhập nội dung trước khi khi spin')
+			return
+		}
+		recursiveSpin($('#root .top .input'), 'origin')
 	}
 }
 function handleSpin() {
 	let spinNumber = 0;
 	spinButton.onclick = function () {
-		if (!textArea.value) {
+		if (!inputBox.textContent) {
 			alert('Nhập nội dung trước khi khi spin')
 			return
 		}
-		const text = Replace($('#root textarea').value)
+		console.log($('#root .top .input').childNodes)
+		const text = Replace($('#root .top .input').childNodes)
+		console.log(text)
 		backDrop.innerHTML = text.origin
 		let titleChild = createElementCustom('div', 'title')
 		titleChild.append(createElementCustom('img', 'left', '', './grip-dots.svg'))
@@ -111,11 +131,6 @@ function handleSpin() {
 		backDrop.scrollTop = textArea.scrollTop
 	}
 }
-function handleScroll() {
-	textArea.onscroll = function (e) {
-		backDrop.scrollTop = textArea.scrollTop
-	}
-}
 function handleRowResize() {
 	spaceBox.addEventListener('mousedown', mouseDown)
 	function mouseDown(e) {
@@ -125,11 +140,10 @@ function handleRowResize() {
 		function mouseMove(e) {
 			if (prevY / window.innerHeight <= 0.9 && prevY / window.innerHeight >= 0.1) {
 				let newY = e.clientY - prevY;
-				const rectInputBox = inputBox.getBoundingClientRect()
+				const rectInputBox = topBox.getBoundingClientRect()
 				const rectResultBox = resultBox.getBoundingClientRect()
-				inputBox.style.height = rectInputBox.height + newY + 'px'
+				topBox.style.height = rectInputBox.height + newY + 'px'
 				resultBox.style.height = rectResultBox.height - newY + 'px'
-				prevY = e.clientY
 			}
 			prevY = e.clientY
 		}
@@ -173,11 +187,10 @@ function getDragAfterElement(child, y) {
 	}, { offset: Number.NEGATIVE_INFINITY }).element
 }
 getData()
-handleChangeTextare()
-handleScroll()
+// handleChangeTextare()
 handleReset()
 handleRowResize()
-handleSpin()
+handleSpin2()
 
 function Replace2(text) {
 	let result = {
@@ -208,7 +221,6 @@ function Replace2(text) {
 					sign: ","
 				}
 			]
-
 			// change word
 			wordList.map((word, index) => {
 				replaceText = replaceText.replace(word.word, '<span>' + " " + strings[randomCustom(strings.length)] + word.sign + '</span>')
