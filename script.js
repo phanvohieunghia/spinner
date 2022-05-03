@@ -1,4 +1,3 @@
-import SpinData from './data.json' assert { type: "json" }
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
@@ -10,6 +9,10 @@ const spinButton = $('#root .spin')
 const resetButton = $('#root .reset')
 const spaceBox = $('#root .space')
 
+let spinnerData
+function getData() {
+	fetch('https://spinner-uto.vercel.app/data.json').then(res => res.json()).then(data => spinnerData = data)
+}
 function randomCustom(length) {
 	return Math.floor(Math.random() * length)
 }
@@ -20,11 +23,11 @@ function Replace(text) {
 	}
 	let replaceText = text
 	let originText = text
-	SpinData.forEach(array => {
+	spinnerData.forEach(array => {
 		array.some((string, i, strings) => {
 			var pretext = replaceText
-			replaceText = replaceText.replace(string, '<span>' + strings[randomCustom(strings.length)] + '</span>')
-			originText = originText.replace(string, '<span>' + string + '</span>')
+			replaceText = replaceText.replace(string, '<span>' + strings[randomCustom(strings.length)] + '</span>&nbsp;')
+			originText = originText.replace(string, '<span>' + string + '</span><code>&nbsp;</code>')
 			if (pretext !== replaceText) return true
 		})
 	})
@@ -59,20 +62,20 @@ function handleReset() {
 	}
 }
 function createElementCustom(typeElement, classValue = null, text = '', srcValue = null, draggableValue = null) {
-	let x = document.createElement(typeElement)
-	classValue && x.setAttribute('class', classValue)
-	srcValue && x.setAttribute('src', srcValue)
-	draggableValue && x.setAttribute('draggable', draggableValue)
-	x.innerHTML = text
-	return x
+	let element = document.createElement(typeElement)
+	classValue && element.setAttribute('class', classValue)
+	srcValue && element.setAttribute('src', srcValue)
+	draggableValue && element.setAttribute('draggable', draggableValue)
+	element.innerHTML = text
+	return element
 }
 function handleChangeTextare() {
 	textArea.oninput = function () {
 		const text = Replace($('#root textarea').value)
 		backDrop.innerHTML = text.origin
+		console.log(text.origin)
 	}
 }
-handleChangeTextare()
 function handleSpin() {
 	let spinNumber = 0;
 	spinButton.onclick = function () {
@@ -169,7 +172,56 @@ function getDragAfterElement(child, y) {
 		}
 	}, { offset: Number.NEGATIVE_INFINITY }).element
 }
+getData()
+handleChangeTextare()
 handleScroll()
 handleReset()
 handleRowResize()
 handleSpin()
+
+function Replace2(text) {
+	let result = {
+		origin: '',
+		replace: ''
+	}
+	let replaceText = text
+	let originText = text
+
+	SpinData.forEach(array => {
+		array.some((string, i, strings) => {
+			// console.log(strings)
+			var pretext = replaceText
+			// get all word matching
+			let wordList = [
+				{
+					word: " " + string + " ",
+					sign: " "
+				}
+				,
+				{
+					word: " " + string + ".",
+					sign: "."
+				}
+				,
+				{
+					word: " " + string + ",",
+					sign: ","
+				}
+			]
+
+			// change word
+			wordList.map((word, index) => {
+				replaceText = replaceText.replace(word.word, '<span>' + " " + strings[randomCustom(strings.length)] + word.sign + '</span>')
+				originText = originText.replace(word.word, '<span>' + word.word + '</span>')
+			})
+
+			if (pretext !== replaceText) return true
+		})
+	})
+	replaceText = replaceText.replace(/\n/gi, "<br />")
+	result.replace = replaceText
+
+	originText = originText.replace(/\n/gi, "<br />")
+	result.origin = originText
+	return result
+}
