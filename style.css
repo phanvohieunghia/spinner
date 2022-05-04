@@ -1,150 +1,50 @@
-* {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-body {
-  background-color: #ddd;
-}
-span {
-  background-color: yellow;
-  border-radius: 6px;
-}
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 6px;
-  background-color: #3dbdee;
-}
-.bd93f9 {
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
-  background-size: 0% 100%;
-  background-repeat: no-repeat;
-  transition: 0.3s linear;
-  user-select: none;
-  cursor: pointer;
-}
-.bd93f9:hover {
-  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
-  background-size: 100% 100%;
-  background-color: #3dbdee;
-}
 #root {
   position: relative;
+  display: flex;
+  height: 100vh;
+  padding: 0 2px;
 }
-#root .input {
-  height: 200px;
+#root > div:first-child,
+#root > div:last-child {
+  width: calc(50% - (var(--screen-split) / 2));
 }
-#root .input .btn {
+#root > div:first-child .input,
+#root > div:last-child .result {
+  margin: 8px 4px 0;
+  height: calc(100% - 36px - 8px);
+  position: relative;
+  padding: 8px;
+  outline: unset;
+  user-select: none;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  overflow-y: scroll;
+}
+#root .left .btn {
   padding: 4px 0;
   text-align: center;
   margin: 0 8px;
 }
-#root .input .btn .reset {
+#root .left .btn .reset {
   float: right;
-
 }
-#root .input .btn > button {
-  padding: 4px 20px;
-}
-#root .input .container {
-  position: relative;
-  height: calc(100% - 36px);
-  margin: 8px 8px 0;
-}
-#root .input .container .backdrop {
-  --position-div: 0;
-  position: absolute;
-  top: var(--position-div);
-  right: var(--position-div);
-  left: var(--position-div);
-  bottom: var(--position-div);
-  z-index: -1;
-  border: 1px solid #ccc;
-  overflow: auto;
-  pointer-events: none;
-  padding: 8px;
-  color: transparent;
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-#root .input .container > textarea {
-  width: 100%;
-  height: 100%;
-  padding: 8px;
-  outline: unset;
-  background-color: transparent;
-  resize: none;
-  z-index: 10;
-  user-select: none;
-  border-color: transparent;
+#root .right .result > * {
+  outline: none;
 }
 #root .space {
-  background-color: #3dbdee;
-  padding: 2px 0;
-  cursor: row-resize;
+  /* background-color: #fff; */
+  /* background-color: rgb(75, 143, 245); */
+  padding: 0 calc(var(--screen-split)/2);
+  padding: 0;
 }
-#root .result {
-  height: calc(100vh - 200px - 4px - 8px) ;
-  overflow-y: scroll;
-  padding: 8px;
-}
-#root .result .child {
-  margin: 10px 0 0;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-  overflow-y: scroll;
-  max-height: 500px;
-  transition: all 0.5s ease;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-#root .result .child.dragging {
-  opacity: 0.2;
-}
-#root .result .child:first-child {
-  margin-top: 0;
-}
-#root .result .child.set-height {
-  max-height: 34px;
-}
-#root .result .child .title {
-  display: flex;
-  justify-content: space-between;
-  justify-items: center;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #aaa;
-  text-align: center;
-  color: #1a6481;
-  user-select: none;
-}
-#root .result .child .title .left {
-  cursor: move;
-}
-#root .result .child .title .mid {
-  background-color: unset;
-  font-weight: 700;
-}
-#root .result .child .title .right {
-  padding: 0 8px;
-}
-#root .result .child .content {
-  padding-top: 4px;
-}
-.logo {
+#root .logo {
   position: absolute;
   right: 12px;
   bottom: 12px;
+  z-index: 999;
 }
-.logo img {
+#root .logo img {
   --logo-size: 40px;
   width: var(--logo-size);
   height: var(--logo-size);
