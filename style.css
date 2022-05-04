@@ -1,47 +1,8 @@
-* {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-body {
-  background-color: #ddd;
-}
-.bd93f9-span {
-  background-color: rgb(29, 243, 136);
-  border-radius: 6px;
-  font-size: inherit;
-}
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 6px;
-  background-color: #3dbdee;
-}
-:root {
-  --screen-split: 4px;
-}
-.bd93f9-button {
-  border: 1px solid #aaa;
-  border-radius: 4px;
-  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
-  background-size: 0% 100%;
-  background-repeat: no-repeat;
-  transition: 0.3s linear;
-  user-select: none;
-  cursor: pointer;
-}
-.bd93f9:hover {
-  background-image: linear-gradient(to left, #3dbdee, #3dbdee);
-  background-size: 100% 100%;
-  background-color: #3dbdee;
-}
 #root {
   position: relative;
   display: flex;
   height: 100vh;
+  padding: 0 2px;
 }
 #root > div:first-child,
 #root > div:last-child {
@@ -49,7 +10,7 @@ body {
 }
 #root > div:first-child .input,
 #root > div:last-child .result {
-  margin: 8px 8px 0;
+  margin: 8px 4px 0;
   height: calc(100% - 36px - 8px);
   position: relative;
   padding: 8px;
@@ -60,71 +21,22 @@ body {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   overflow-y: scroll;
 }
-#root .top .btn {
+#root .left .btn {
   padding: 4px 0;
   text-align: center;
   margin: 0 8px;
 }
-#root .top .btn .reset {
+#root .left .btn .reset {
   float: right;
 }
-#root .top .btn > button {
-  padding: 4px 20px;
-}
-#root .top .input {
-
-}
-#root .right {
-  height: 100%;
-}
-#root .right .result .child {
-  margin: 10px 0 0;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-  overflow-y: scroll;
-  max-height: 500px;
-  transition: all 0.5s ease;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-#root .right .result .child.dragging {
-  opacity: 0.2;
-}
-#root .right .result .child:first-child {
-  margin-top: 0;
-}
-#root .right .result .child.set-height {
-  max-height: 34px;
-}
-#root .right .result .child .title {
-  display: flex;
-  justify-content: space-between;
-  justify-items: center;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #aaa;
-  text-align: center;
-  color: #1a6481;
-  user-select: none;
-}
-#root .right .result .child .title .left {
-  cursor: move;
-}
-#root .right .result .child .title .mid {
-  background-color: unset;
-  font-weight: 700;
-}
-#root .result .child .title .right {
-  padding: 0 8px;
-}
-#root .right .result .child .content {
-  padding-top: 4px;
+#root .right .result > * {
+  outline: none;
 }
 #root .space {
-  background-color: #3dbdee;
+  /* background-color: #fff; */
+  /* background-color: rgb(75, 143, 245); */
   padding: 0 calc(var(--screen-split)/2);
-  cursor: row-resize;
+  padding: 0;
 }
 #root .logo {
   position: absolute;

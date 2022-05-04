@@ -1,9 +1,9 @@
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
 
-const topBox = $('#root .top')
+const leftBox = $('#root .left')
 const resultBox = $('#root .result')
-const inputBox = $('#root .top .input')
+const inputBox = $('#root .left .input')
 
 const spinButton = $('#root .spin')
 const resetButton = $('#root .reset')
@@ -47,27 +47,16 @@ function randomColor() {
 function handleReset() {
 	resetButton.onclick = function () {
 		const currentResult = $('#root .result')
-		const currentTextArea = $('#root .top .container > textarea')
-		const currentBackdrop = $('#root .top .container .backdrop')
+		const currentBackdrop = $('#root .left .container .backdrop')
 		if (!currentResult.hasChildNodes()
-			&& !currentTextArea.value
 			&& !currentBackdrop.hasChildNodes())
 			return
 		let text = "Thao tác này sẽ làm mất những lần spin trước đó.\n Nhấn OK để tiếp tục."
 		if (confirm(text)) {
-			$('#root .top .container > textarea').value = ''
-			$('#root .top .container .backdrop').innerHTML = ''
-			$('#root .result').innerHTML = ''
+			$('#root .left .input').innerHTML = ''
+			$('#root .right .result').innerHTML = ''
 		}
 	}
-}
-function createElementCustom(typeElement, classValue = null, text = '', srcValue = null, draggableValue = null) {
-	let element = document.createElement(typeElement)
-	classValue && element.setAttribute('class', classValue)
-	srcValue && element.setAttribute('src', srcValue)
-	draggableValue && element.setAttribute('draggable', draggableValue)
-	element.innerHTML = text
-	return element
 }
 function recursiveSpin(originElement, replaceElement) {
 	originElement.childNodes.forEach((childElement, i) => {
@@ -75,74 +64,29 @@ function recursiveSpin(originElement, replaceElement) {
 			const text = Replace(childElement.nodeValue)
 			originElement.innerHTML = text.origin
 			replaceElement.innerHTML = text.replace
+			if (!originElement.style.color) {
+				originElement.style.color = "initial"
+				replaceElement.style.color = "initial"
+			}
 		}
 		recursiveSpin(childElement, replaceElement.childNodes[i])
 	})
 }
-function handleSpin2() {
+function handleSpin() {
+	inputBox.onfocusin = function () {
+		console.log('focus')
+	}
+	inputBox.onfocusout = function () {
+		console.log('out focus')
+	}
 	spinButton.onclick = function () {
 		if (!inputBox.textContent) {
 			alert('Nhập nội dung trước khi khi spin')
 			return
 		}
-		const currentInputBox = $('#root .top .input')
+		const currentInputBox = $('#root .left .input')
 		resultBox.append(currentInputBox.cloneNode(true))
 		recursiveSpin(currentInputBox, resultBox.childNodes[0])
-	}
-}
-function handleSpin() {
-	let spinNumber = 0;
-	spinButton.onclick = function () {
-		if (!inputBox.textContent) {
-			alert('Nhập nội dung trước khi khi spin')
-			return
-		}
-		const text = Replace($('#root .top .input').childNodes)
-		let titleChild = createElementCustom('div', 'title')
-		titleChild.append(createElementCustom('img', 'left', '', './grip-dots.svg'))
-		titleChild.append(createElementCustom('span', 'mid', `Spin ${spinNumber + 1}`))
-		spinNumber++
-		titleChild.append(createElementCustom('button', 'right bd93f9-button', 'Toggle'))
-		let contentChild = createElementCustom('div', 'content', text.replace)
-		let newChild = createElementCustom('div', 'child', '', null, null)
-		newChild.style.backgroundColor = randomColor()
-		newChild.append(titleChild, contentChild)
-		newChild.firstChild.firstChild.addEventListener('mousedown', function (e) {
-			e.target.parentElement.parentElement.setAttribute('draggable', 'true')
-			handleDragging()
-		})
-		newChild.firstChild.firstChild.addEventListener('mouseup', function (e) {
-			e.target.parentElement.parentElement.removeAttribute('draggable')
-		})
-		resultBox.prepend(newChild)
-
-		$$('.result .child .title .right').forEach((element, i) => {
-			element.onclick = function () {
-				element.parentElement.parentElement.classList.toggle('set-height')
-			}
-		})
-	}
-}
-function handleRowResize() {
-	spaceBox.addEventListener('mousedown', mouseDown)
-	function mouseDown(e) {
-		window.addEventListener('mousemove', mouseMove)
-		window.addEventListener('mouseup', mouseUp)
-		let prevY = e.clientY
-		function mouseMove(e) {
-			if (prevY / window.innerHeight <= 0.9 && prevY / window.innerHeight >= 0.1) {
-				let newY = e.clientY - prevY;
-				const rectInputBox = topBox.getBoundingClientRect()
-				const rectResultBox = resultBox.getBoundingClientRect()
-				topBox.style.height = rectInputBox.height + newY + 'px'
-				resultBox.style.height = rectResultBox.height - newY + 'px'
-			}
-			prevY = e.clientY
-		}
-		function mouseUp() {
-			window.removeEventListener('mousemove', mouseMove)
-			window.removeEventListener('mousedown', mouseUp)
-		}
 	}
 }
 function handleDragging() {
@@ -178,10 +122,31 @@ function getDragAfterElement(child, y) {
 		}
 	}, { offset: Number.NEGATIVE_INFINITY }).element
 }
+function handleScroll() {
+
+	function handleScrollInputBox() {
+		resultBox.scrollTop = inputBox.scrollTop
+	}
+	function handleScrollResultBox() {
+		inputBox.scrollTop = resultBox.scrollTop
+	}
+	inputBox.onmouseenter = function (e) {
+		e.target.addEventListener('scroll', handleScrollInputBox)
+	}
+	inputBox.onmouseleave = function (e) {
+		e.target.removeEventListener('scroll', handleScrollInputBox)
+	}
+	resultBox.onmouseenter = function (e) {
+		e.target.addEventListener('scroll', handleScrollResultBox)
+	}
+	resultBox.onmouseleave = function (e) {
+		e.target.removeEventListener('scroll', handleScrollResultBox)
+	}
+}
 getData()
 handleReset()
-// handleRowResize()
-handleSpin2()
+handleScroll()
+handleSpin()
 
 function Replace2(text) {
 	let result = {
@@ -228,3 +193,44 @@ function Replace2(text) {
 	result.origin = originText
 	return result
 }
+// function createElementCustom(typeElement, classValue = null, text = '', srcValue = null, draggableValue = null) {
+// 	let element = document.createElement(typeElement)
+// 	classValue && element.setAttribute('class', classValue)
+// 	srcValue && element.setAttribute('src', srcValue)
+// 	draggableValue && element.setAttribute('draggable', draggableValue)
+// 	element.innerHTML = text
+// 	return element
+// }
+// function handleSpin2() {
+// 	let spinNumber = 0;
+// 	spinButton.onclick = function () {
+// 		if (!inputBox.textContent) {
+// 			alert('Nhập nội dung trước khi khi spin')
+// 			return
+// 		}
+// 		const text = Replace($('#root .left .input').childNodes)
+// 		let titleChild = createElementCustom('div', 'title')
+// 		titleChild.append(createElementCustom('img', 'left', '', './grip-dots.svg'))
+// 		titleChild.append(createElementCustom('span', 'mid', `Spin ${spinNumber + 1}`))
+// 		spinNumber++
+// 		titleChild.append(createElementCustom('button', 'right bd93f9-button', 'Toggle'))
+// 		let contentChild = createElementCustom('div', 'content', text.replace)
+// 		let newChild = createElementCustom('div', 'child', '', null, null)
+// 		newChild.style.backgroundColor = randomColor()
+// 		newChild.append(titleChild, contentChild)
+// 		newChild.firstChild.firstChild.addEventListener('mousedown', function (e) {
+// 			e.target.parentElement.parentElement.setAttribute('draggable', 'true')
+// 			handleDragging()
+// 		})
+// 		newChild.firstChild.firstChild.addEventListener('mouseup', function (e) {
+// 			e.target.parentElement.parentElement.removeAttribute('draggable')
+// 		})
+// 		resultBox.prepend(newChild)
+
+// 		$$('.result .child .title .right').forEach((element, i) => {
+// 			element.onclick = function () {
+// 				element.parentElement.parentElement.classList.toggle('set-height')
+// 			}
+// 		})
+// 	}
+// }
