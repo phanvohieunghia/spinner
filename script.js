@@ -26,8 +26,8 @@ function Replace(text) {
 	spinnerData.forEach(array => {
 		array.some((string, i, strings) => {
 			var pretext = replaceText
-			replaceText = replaceText.replace(string, `<span class="bd93f10">${strings[randomCustom(strings.length)]}</span>`)
-			originText = originText.replace(string, `<span class="bd93f10">${string}</span>`)
+			replaceText = replaceText.replace(string, `<span class="bd93f9-span">${strings[randomCustom(strings.length)]}</span>`)
+			originText = originText.replace(string, `<span class="bd93f9-span">${string}</span>`)
 			if (pretext !== replaceText) return true
 		})
 	})
@@ -69,20 +69,14 @@ function createElementCustom(typeElement, classValue = null, text = '', srcValue
 	element.innerHTML = text
 	return element
 }
-// function handleChangeTextare() {
-// 	inputBox.onchange = function () {
-// 		console.log('change')
-// 		// const text = Replace($('#root textarea').value)
-// 		// backDrop.innerHTML = text.origin
-// 	}
-// }
-function recursiveSpin(element, type) {
-	element.childNodes.forEach(childElement => {
-		// console.log(childElement)
+function recursiveSpin(originElement, replaceElement) {
+	originElement.childNodes.forEach((childElement, i) => {
 		if (childElement.nodeValue) {
-			element.innerHTML = Replace(childElement.nodeValue)[type]
+			const text = Replace(childElement.nodeValue)
+			originElement.innerHTML = text.origin
+			replaceElement.innerHTML = text.replace
 		}
-		recursiveSpin(childElement, type)
+		recursiveSpin(childElement, replaceElement.childNodes[i])
 	})
 }
 function handleSpin2() {
@@ -91,7 +85,9 @@ function handleSpin2() {
 			alert('Nhập nội dung trước khi khi spin')
 			return
 		}
-		recursiveSpin($('#root .top .input'), 'origin')
+		const currentInputBox = $('#root .top .input')
+		resultBox.append(currentInputBox.cloneNode(true))
+		recursiveSpin(currentInputBox, resultBox.childNodes[0])
 	}
 }
 function handleSpin() {
@@ -101,15 +97,12 @@ function handleSpin() {
 			alert('Nhập nội dung trước khi khi spin')
 			return
 		}
-		console.log($('#root .top .input').childNodes)
 		const text = Replace($('#root .top .input').childNodes)
-		console.log(text)
-		backDrop.innerHTML = text.origin
 		let titleChild = createElementCustom('div', 'title')
 		titleChild.append(createElementCustom('img', 'left', '', './grip-dots.svg'))
 		titleChild.append(createElementCustom('span', 'mid', `Spin ${spinNumber + 1}`))
 		spinNumber++
-		titleChild.append(createElementCustom('button', 'right bd93f9', 'Toggle'))
+		titleChild.append(createElementCustom('button', 'right bd93f9-button', 'Toggle'))
 		let contentChild = createElementCustom('div', 'content', text.replace)
 		let newChild = createElementCustom('div', 'child', '', null, null)
 		newChild.style.backgroundColor = randomColor()
@@ -128,7 +121,6 @@ function handleSpin() {
 				element.parentElement.parentElement.classList.toggle('set-height')
 			}
 		})
-		backDrop.scrollTop = textArea.scrollTop
 	}
 }
 function handleRowResize() {
@@ -187,9 +179,8 @@ function getDragAfterElement(child, y) {
 	}, { offset: Number.NEGATIVE_INFINITY }).element
 }
 getData()
-// handleChangeTextare()
 handleReset()
-handleRowResize()
+// handleRowResize()
 handleSpin2()
 
 function Replace2(text) {
