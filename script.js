@@ -46,15 +46,14 @@ function randomColor() {
 }
 function handleReset() {
 	resetButton.onclick = function () {
-		const currentResult = $('#root .result')
-		const currentBackdrop = $('#root .left .container .backdrop')
-		if (!currentResult.hasChildNodes()
-			&& !currentBackdrop.hasChildNodes())
+		const currentInput = $('#root .left .input')
+		const currentResult = $('#root .right .result')
+		if (!currentResult.hasChildNodes() && !currentInput.hasChildNodes())
 			return
 		let text = "Thao tác này sẽ làm mất những lần spin trước đó.\n Nhấn OK để tiếp tục."
 		if (confirm(text)) {
-			$('#root .left .input').innerHTML = ''
-			$('#root .right .result').innerHTML = ''
+			currentInput.innerHTML = ''
+			currentResult.innerHTML = ''
 		}
 	}
 }
@@ -73,11 +72,10 @@ function recursiveSpin(originElement, replaceElement) {
 	})
 }
 function handleSpin() {
-	inputBox.onfocusin = function () {
-		console.log('focus')
+	const x = $('#root .left .input')
+	x.onfocus = function () {
 	}
-	inputBox.onfocusout = function () {
-		console.log('out focus')
+	x.onblur = function () {
 	}
 	spinButton.onclick = function () {
 		if (!inputBox.textContent) {
@@ -85,6 +83,8 @@ function handleSpin() {
 			return
 		}
 		const currentInputBox = $('#root .left .input')
+		const currentResultBox = $('#root .right .result')
+		currentResultBox.innerHTML = ''
 		resultBox.append(currentInputBox.cloneNode(true))
 		recursiveSpin(currentInputBox, resultBox.childNodes[0])
 	}
@@ -123,7 +123,6 @@ function getDragAfterElement(child, y) {
 	}, { offset: Number.NEGATIVE_INFINITY }).element
 }
 function handleScroll() {
-
 	function handleScrollInputBox() {
 		resultBox.scrollTop = inputBox.scrollTop
 	}

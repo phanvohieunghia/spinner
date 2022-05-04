@@ -6,10 +6,13 @@
 }
 body {
   background-color: #ddd;
+  overflow-y: hidden;
 }
 :root {
   --screen-split: 4px;
   --main-color: #3dbdee;
+  --scrollbar-style: 20px;
+  --scrollbar-style-thumb: 4px; 
 }
 .bd93f9-span {
   background-color: rgb(129, 252, 191);
@@ -35,20 +38,14 @@ body {
   color: #fff;
   background-color: var(--main-color);
 }
-.scrollbar-style {
-  color: transparent;
-  transition: all 0.25s ease-in-out;
+.scrollbar-style::-webkit-scrollbar {
+  width: var(--scrollbar-style);
 }
-.scrollbar-style:hover {
-  color: var(--main-color);
-}
-.scrollbar-style::-webkit-scrollbar,
 .scrollbar-style::-webkit-scrollbar-thumb {
-  width: 12px;
   border-radius: 10px;
-  border: 4px solid red;
-  border: 4px solid transparent;
+  background-clip: padding-box;
+  border: calc((var(--scrollbar-style) - var(--scrollbar-style-thumb)) / 2) solid transparent;
 }
 .scrollbar-style::-webkit-scrollbar-thumb {        
-  box-shadow: 0 0 0 12px inset;
+  box-shadow: inset 0 0 0 var(--scrollbar-style-thumb);
 }
