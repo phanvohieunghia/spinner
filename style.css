@@ -19,10 +19,10 @@
   background-color: #fff;
   outline: unset;
   border-radius: 8px;
-  /* user-select: none; */
   overflow-y: scroll;
   -webkit-text-fill-color: black;
   color: transparent;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
   transition: color 0.25s ease-in-out;
 }
 #root > div:first-child .input:hover,
@@ -41,7 +41,6 @@
   outline: none;
 }
 #root .space {
-  /* padding: 0 calc(var(--screen-split) / 2); */
   padding: 0;
 }
 #root .logo {

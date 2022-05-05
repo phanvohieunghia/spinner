@@ -5,8 +5,8 @@ const leftBox = $('#root .left')
 const resultBox = $('#root .result')
 const inputBox = $('#root .left .input')
 
-const spinButton = $('#root .spin')
-const resetButton = $('#root .reset')
+const spinButton = $('#root .left .btn .spin')
+const resetButton = $('#root .left .btn .reset')
 const spaceBox = $('#root .space')
 
 let spinnerData
@@ -26,8 +26,50 @@ function Replace(text) {
 	spinnerData.forEach(array => {
 		array.some((string, i, strings) => {
 			var pretext = replaceText
-			replaceText = replaceText.replace(string, `<span class="bd93f9-span">${strings[randomCustom(strings.length)]}</span>`)
-			originText = originText.replace(string, `<span class="bd93f9-span">${string}</span>`)
+			replaceText = replaceText.replace(string, `<span class="hn">${strings[randomCustom(strings.length)]}</span>`)
+			originText = originText.replace(string, `<span class="hn">${string}</span>`)
+			if (pretext !== replaceText) return true
+		})
+	})
+	replaceText = replaceText.replace(/\n/gi, "<br />")
+	result.replace = replaceText
+
+	originText = originText.replace(/\n/gi, "<br />")
+	result.origin = originText
+	return result
+}
+function Replace2(text) {
+	let result = {
+		origin: '',
+		replace: ''
+	}
+	let replaceText = text
+	let originText = text
+
+	SpinData.forEach(array => {
+		array.some((string, i, strings) => {
+			var pretext = replaceText
+			// get all word matching
+			let wordList = [
+				{
+					word: " " + string + " ",
+					sign: " "
+				},
+				{
+					word: " " + string + ".",
+					sign: "."
+				},
+				{
+					word: " " + string + ",",
+					sign: ","
+				}
+			]
+			// change word
+			wordList.map((word, index) => {
+				replaceText = replaceText.replace(word.word, '<span>' + " " + strings[randomCustom(strings.length)] + word.sign + '</span>')
+				originText = originText.replace(word.word, '<span>' + word.word + '</span>')
+			})
+
 			if (pretext !== replaceText) return true
 		})
 	})
@@ -58,18 +100,12 @@ function handleReset() {
 	}
 }
 function recursiveSpin(originElement, replaceElement) {
-	originElement.childNodes.forEach((childElement, i) => {
-		if (childElement.nodeValue) {
-			const text = Replace(childElement.nodeValue)
-			originElement.innerHTML = text.origin
-			replaceElement.innerHTML = text.replace
-			if (!originElement.style.color) {
-				originElement.style.color = "initial"
-				replaceElement.style.color = "initial"
-			}
-		}
-		recursiveSpin(childElement, replaceElement.childNodes[i])
-	})
+	console.log('***', originElement)
+	const collection = originElement.children
+	for (let i = 0; i < collection.length; i++) {
+		console.log(collection[i].hasChildNodes())
+		recursiveSpin(collection[i], replaceElement)
+	}
 }
 function handleSpin() {
 	const x = $('#root .left .input')
@@ -87,6 +123,7 @@ function handleSpin() {
 		currentResultBox.innerHTML = ''
 		resultBox.append(currentInputBox.cloneNode(true))
 		recursiveSpin(currentInputBox, resultBox.childNodes[0])
+		currentInputBox.scrollTop = 0
 	}
 }
 function handleDragging() {
@@ -146,90 +183,3 @@ getData()
 handleReset()
 handleScroll()
 handleSpin()
-
-function Replace2(text) {
-	let result = {
-		origin: '',
-		replace: ''
-	}
-	let replaceText = text
-	let originText = text
-
-	SpinData.forEach(array => {
-		array.some((string, i, strings) => {
-			// console.log(strings)
-			var pretext = replaceText
-			// get all word matching
-			let wordList = [
-				{
-					word: " " + string + " ",
-					sign: " "
-				}
-				,
-				{
-					word: " " + string + ".",
-					sign: "."
-				}
-				,
-				{
-					word: " " + string + ",",
-					sign: ","
-				}
-			]
-			// change word
-			wordList.map((word, index) => {
-				replaceText = replaceText.replace(word.word, '<span>' + " " + strings[randomCustom(strings.length)] + word.sign + '</span>')
-				originText = originText.replace(word.word, '<span>' + word.word + '</span>')
-			})
-
-			if (pretext !== replaceText) return true
-		})
-	})
-	replaceText = replaceText.replace(/\n/gi, "<br />")
-	result.replace = replaceText
-
-	originText = originText.replace(/\n/gi, "<br />")
-	result.origin = originText
-	return result
-}
-// function createElementCustom(typeElement, classValue = null, text = '', srcValue = null, draggableValue = null) {
-// 	let element = document.createElement(typeElement)
-// 	classValue && element.setAttribute('class', classValue)
-// 	srcValue && element.setAttribute('src', srcValue)
-// 	draggableValue && element.setAttribute('draggable', draggableValue)
-// 	element.innerHTML = text
-// 	return element
-// }
-// function handleSpin2() {
-// 	let spinNumber = 0;
-// 	spinButton.onclick = function () {
-// 		if (!inputBox.textContent) {
-// 			alert('Nhập nội dung trước khi khi spin')
-// 			return
-// 		}
-// 		const text = Replace($('#root .left .input').childNodes)
-// 		let titleChild = createElementCustom('div', 'title')
-// 		titleChild.append(createElementCustom('img', 'left', '', './grip-dots.svg'))
-// 		titleChild.append(createElementCustom('span', 'mid', `Spin ${spinNumber + 1}`))
-// 		spinNumber++
-// 		titleChild.append(createElementCustom('button', 'right bd93f9-button', 'Toggle'))
-// 		let contentChild = createElementCustom('div', 'content', text.replace)
-// 		let newChild = createElementCustom('div', 'child', '', null, null)
-// 		newChild.style.backgroundColor = randomColor()
-// 		newChild.append(titleChild, contentChild)
-// 		newChild.firstChild.firstChild.addEventListener('mousedown', function (e) {
-// 			e.target.parentElement.parentElement.setAttribute('draggable', 'true')
-// 			handleDragging()
-// 		})
-// 		newChild.firstChild.firstChild.addEventListener('mouseup', function (e) {
-// 			e.target.parentElement.parentElement.removeAttribute('draggable')
-// 		})
-// 		resultBox.prepend(newChild)
-
-// 		$$('.result .child .title .right').forEach((element, i) => {
-// 			element.onclick = function () {
-// 				element.parentElement.parentElement.classList.toggle('set-height')
-// 			}
-// 		})
-// 	}
-// }
