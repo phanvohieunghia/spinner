@@ -8,7 +8,7 @@ const inputBox = $('#root .left .input')
 const spinButton = $('#root .left .btn .spin')
 const resetButton = $('#root .left .btn .reset')
 const spaceBox = $('#root .space')
-
+// import spinnerData from './data.json' assert {type: 'json'}
 let spinnerData
 function getData() {
 	fetch('https://spinner-uto.vercel.app/data.json').then(res => res.json()).then(data => spinnerData = data)
@@ -99,13 +99,30 @@ function handleReset() {
 		}
 	}
 }
-function recursiveSpin(originElement, replaceElement) {
-	console.log('***', originElement)
-	const collection = originElement.children
-	for (let i = 0; i < collection.length; i++) {
-		console.log(collection[i].hasChildNodes())
-		recursiveSpin(collection[i], replaceElement)
-	}
+function handleTextNode(originElement) {
+	const originList = originElement.querySelectorAll('*')
+	originList.forEach(element => {
+		if (element.childNodes.length > 1) {
+			element.childNodes.forEach(child => {
+				if (child.nodeName === '#text') {
+					const newSpanElement = document.createElement('span')
+					newSpanElement.innerText = child.nodeValue
+					element.replaceChild(newSpanElement, child)
+				}
+			})
+		}
+	})
+}
+function highlightWord(originElement, replaceElement) {
+	const originList = originElement.querySelectorAll('*')
+	const replaceList = replaceElement.querySelectorAll('*')
+	originList.forEach((element, i) => {
+		if (element.nodeName !== 'IMG' && element.childNodes[0].nodeName === '#text' && element.childNodes.length === 1) {
+			const text = Replace(element.innerText)
+			element.innerHTML = text.origin
+			replaceList[i].innerHTML = text.replace
+		}
+	})
 }
 function handleSpin() {
 	const x = $('#root .left .input')
@@ -120,9 +137,10 @@ function handleSpin() {
 		}
 		const currentInputBox = $('#root .left .input')
 		const currentResultBox = $('#root .right .result')
+		handleTextNode(currentInputBox)
 		currentResultBox.innerHTML = ''
 		resultBox.append(currentInputBox.cloneNode(true))
-		recursiveSpin(currentInputBox, resultBox.childNodes[0])
+		highlightWord(currentInputBox, resultBox.childNodes[0])
 		currentInputBox.scrollTop = 0
 	}
 }
