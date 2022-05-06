@@ -10,16 +10,24 @@
 }
 #root > div:first-child .input,
 #root > div:last-child .result {
-  margin: 8px 4px 0;
-  height: calc(100% - 36px - 8px);
   position: relative;
+  height: calc(100% - 36px - 8px);
+  margin: 8px 4px 0;
   padding: 8px;
-  outline: unset;
-  user-select: none;
-  border-radius: 8px;
-  background: #fff;
+  padding-right: 0;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fff;
+  outline: unset;
+  border-radius: 8px;
   overflow-y: scroll;
+  -webkit-text-fill-color: black;
+  color: transparent;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  transition: color 0.25s ease-in-out;
+}
+#root > div:first-child .input:hover,
+#root > div:last-child .result:hover {
+  color: var(--main-color);
 }
 #root .left .btn {
   padding: 4px 0;
@@ -27,15 +35,12 @@
   margin: 0 8px;
 }
 #root .left .btn .reset {
-  float: right;
+  float: left;
 }
 #root .right .result > * {
   outline: none;
 }
 #root .space {
-  /* background-color: #fff; */
-  /* background-color: rgb(75, 143, 245); */
-  padding: 0 calc(var(--screen-split)/2);
   padding: 0;
 }
 #root .logo {
