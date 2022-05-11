@@ -16,9 +16,29 @@ body {
   --scrollbar-style-thumb: 4px; 
 }
 .hn {
+  position: relative;
   background-color: rgb(129, 252, 191);
   border-radius: 4px;
   font-size: inherit;
+}
+.hn .hn-child {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  border: 1px solid #000;
+  background: #fff;
+  width: max-content;
+  z-index: 1;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  border-radius: 4px;
+}
+.hn:hover .hn-child {
+  display: block;
 }
 .bd93f9-button {
   border: 1px solid var(--main-color);

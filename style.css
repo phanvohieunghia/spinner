@@ -34,6 +34,10 @@
   text-align: center;
   margin: 0 8px;
 }
+#root .left .btn .word-counter {
+  float: right;
+  padding: 4px 20px;
+}
 #root .left .btn .reset {
   float: left;
 }
