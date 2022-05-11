@@ -29,6 +29,7 @@
 #root > div:last-child .result:hover {
   color: var(--main-color);
 }
+#root .right .btn,
 #root .left .btn {
   padding: 4px 0;
   text-align: center;

@@ -5,18 +5,24 @@ const resultBox = $('#root .result')
 const inputBox = $('#root .left .input')
 const spinButton = $('#root .left .btn .spin')
 const resetButton = $('#root .left .btn .reset')
-// import spellcheckerData from './spellchecker-data.json' assert {type: 'json'}
+const spellCheckerButton = $('#root .right .btn .spellcheck')
 // import spinnerData from './data.json' assert {type: 'json'}
-let spinnerData
-let spellcheckerData
+import data2 from './data2.json' assert {type: 'json'}
+import data4 from './data4.json' assert {type: 'json'}
+import spinnerData from './replace-data.json' assert {type: 'json'}
+import spellcheckerData from './spellcheckerData.json' assert {type: 'json'}
+// let spinnerData
+// let spellcheckerData
 
 function getSpinnerData() {
-	fetch('https://spinner-uto.vercel.app/data.json').then(res => res.json()).then(data => spinnerData = data)
+	fetch('https://spinner-uto.vercel.app/replace-data.json')
+		.then(res => res.json()).then(data => spinnerData = data)
+		.catch(error => console.log('Lỗi: ', error))
 }
 function getSpellcheckerData() {
 	fetch('https://spinner-uto.vercel.app/spellcheckerData.json')
-		.then(res => res.json()).then(data => spellcheckerData = data).catch(error => console.log(error))
-
+		.then(res => res.json()).then(data => spellcheckerData = data)
+		.catch(error => console.log('Lỗi: ', error))
 }
 function randomCustom(length) {
 	return Math.floor(Math.random() * length)
@@ -146,17 +152,13 @@ function handleSpin() {
 }
 function handleWordCounter() {
 	const x = $('#root .left .input').innerText
-	// console.log(x)
-	console.log(x.split(/[\n\r\s]+/g))
 	const total = x.split(/[\n\r\s]+/g).filter(function (word) {
 		return word.length > 0;
 	}).length;
 	$('.word-counter').innerText = total + ' words'
-
 }
 function handleHighlightWord(inputElement) {
 	inputElement.querySelectorAll('.hn').forEach(element => {
-		console.log(element)
 		const newChild = document.createElement('div')
 		newChild.setAttribute('class', 'hn-child')
 		newChild.textContent = 'Một Hai Ba'
@@ -196,9 +198,31 @@ function handleReset() {
 		}
 	}
 }
+function createCustomObject(character, i, characters, currentList) {
+	if (i == characters.length - 1) {
+		currentList[character] = { "_": "" }
+	} else {
+		i++
+		const x = {}
+		x[characters[i]] = ""
+		const y = currentList[character]
+		currentList[character] = { ...x, ...y }
+		createCustomObject(characters[i], i, characters, currentList[character])
+	}
+}
+function handleSpellcheckerData(data) {
+	let newList = {}
+	data.forEach((word, i) => {
+		createCustomObject(word[0], 0, word, newList)
+	})
+	console.log('total: ', newList)
+
+	exportToJsonFile(newList)
+}
 function handleInput() {
 	inputBox.oninput = function () {
 		handleWordCounter()
+		// handleSpellcheckerData(data2)
 	}
 }
 function exportToJsonFile(jsonData) {
@@ -212,10 +236,40 @@ function exportToJsonFile(jsonData) {
 	linkElement.setAttribute('download', exportFileDefaultName);
 	linkElement.click();
 }
+function compareWord(wordList, index, data) {
+	console.log(data, index, data[wordList[index]])
+	if (data[wordList[index]] === undefined) {
+		return false
+	}
+	else if (index === wordList.length - 1 && data[wordList[index]]["_"] === '') {
+		return true
+	}
+	else {
+		index++
+		return compareWord(wordList, index, data[wordList[index - 1]])
+	}
+}
+function highlightWrongWord() {
+	spellCheckerButton.onclick = function () {
+		const x = $('#root .right .result .input').innerText
+		const total = x.split(/[\n\r\s]+/g).filter(function (word) {
+			return word.length > 0;
+		});
+		total.forEach((word, i) => {
+			const wordList = word.split('');
+			const isCheck = compareWord(wordList, 0, data4)
+			if (!isCheck) {
+				console.log(word)
+			}
+		})
+	}
 
-getSpinnerData()
-getSpellcheckerData()
+}
+
+// getSpinnerData()
 handleSpin()
 handleReset()
 handleScroll()
 handleInput()
+// getSpellcheckerData()
+highlightWrongWord()
