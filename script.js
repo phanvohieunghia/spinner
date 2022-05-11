@@ -9,11 +9,14 @@ const resetButton = $('#root .left .btn .reset')
 // import spinnerData from './data.json' assert {type: 'json'}
 let spinnerData
 let spellcheckerData
+
 function getSpinnerData() {
 	fetch('https://spinner-uto.vercel.app/data.json').then(res => res.json()).then(data => spinnerData = data)
 }
 function getSpellcheckerData() {
-	fetch('https://spinner-uto.vercel.app/spellchecker-data.json').then(res => res.json()).then(data => spellcheckerData = data)
+	fetch('https://spinner-uto.vercel.app/spellcheckerData.json')
+		.then(res => res.json()).then(data => spellcheckerData = data).catch(error => console.log(error))
+
 }
 function randomCustom(length) {
 	return Math.floor(Math.random() * length)
@@ -211,8 +214,8 @@ function exportToJsonFile(jsonData) {
 }
 
 getSpinnerData()
+getSpellcheckerData()
 handleSpin()
 handleReset()
 handleScroll()
 handleInput()
-getSpellcheckerData()
