@@ -5,10 +5,15 @@ const resultBox = $('#root .result')
 const inputBox = $('#root .left .input')
 const spinButton = $('#root .left .btn .spin')
 const resetButton = $('#root .left .btn .reset')
+// import spellcheckerData from './spellchecker-data.json' assert {type: 'json'}
 // import spinnerData from './data.json' assert {type: 'json'}
 let spinnerData
-function getData() {
+let spellcheckerData
+function getSpinnerData() {
 	fetch('https://spinner-uto.vercel.app/data.json').then(res => res.json()).then(data => spinnerData = data)
+}
+function getSpellcheckerData() {
+	fetch('https://spinner-uto.vercel.app/spellchecker-data.json').then(res => res.json()).then(data => spellcheckerData = data)
 }
 function randomCustom(length) {
 	return Math.floor(Math.random() * length)
@@ -34,9 +39,6 @@ function Replace(text) {
 	originText = originText.replace(/\n/gi, "<br />")
 	result.origin = originText
 	return result
-}
-function handleChildHighlight(wordArray) {
-
 }
 function superReplace(text) {
 	let result = {
@@ -196,8 +198,21 @@ function handleInput() {
 		handleWordCounter()
 	}
 }
-getData()
+function exportToJsonFile(jsonData) {
+	let dataStr = JSON.stringify(jsonData);
+	let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+	let exportFileDefaultName = 'data.json';
+
+	let linkElement = document.createElement('a');
+	linkElement.setAttribute('href', dataUri);
+	linkElement.setAttribute('download', exportFileDefaultName);
+	linkElement.click();
+}
+
+getSpinnerData()
 handleSpin()
 handleReset()
 handleScroll()
 handleInput()
+getSpellcheckerData()
