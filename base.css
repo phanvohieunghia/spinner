@@ -15,6 +15,19 @@ body {
   --scrollbar-style: 20px;
   --scrollbar-style-thumb: 4px; 
 }
+.pv {
+  border-radius: 4px;
+  font-size: inherit;
+  /* text-decoration: red wavy underline; */
+  /* text-decoration-thickness: 1%;
+  text-underline-position: auto;
+  text-underline-offset: -1px; */
+  background-image: url("./underline.png");
+  background-position: 0 100%;
+  background-size: contain;
+  color: #e8665f;
+  background-repeat: no-repeat;
+}
 .hn {
   position: relative;
   background-color: rgb(129, 252, 191);

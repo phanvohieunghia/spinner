@@ -25,6 +25,10 @@
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
   transition: color 0.25s ease-in-out;
 }
+#root > div:first-child .input[placeholder]:empty:before {
+  content: attr(placeholder);
+  -webkit-text-fill-color: #ccc;
+}
 #root > div:first-child .input:hover,
 #root > div:last-child .result:hover {
   color: var(--main-color);

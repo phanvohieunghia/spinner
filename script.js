@@ -6,48 +6,24 @@ const inputBox = $('#root .left .input')
 const spinButton = $('#root .left .btn .spin')
 const resetButton = $('#root .left .btn .reset')
 const spellCheckerButton = $('#root .right .btn .spellcheck')
-// import spinnerData from './data.json' assert {type: 'json'}
-import data2 from './data2.json' assert {type: 'json'}
-import data4 from './data4.json' assert {type: 'json'}
+// import spinnerData from './replace-data.json' assert {type: 'json'}
 import spinnerData from './replace-data.json' assert {type: 'json'}
-import spellcheckerData from './spellcheckerData.json' assert {type: 'json'}
+import spellcheckData from './spellcheck-data.json' assert {type: 'json'}
 // let spinnerData
-// let spellcheckerData
+// let spellcheckData
 
-function getSpinnerData() {
+function getReplaceData() {
 	fetch('https://spinner-uto.vercel.app/replace-data.json')
 		.then(res => res.json()).then(data => spinnerData = data)
 		.catch(error => console.log('Lỗi: ', error))
 }
-function getSpellcheckerData() {
+function getSpellcheckData() {
 	fetch('https://spinner-uto.vercel.app/spellcheckerData.json')
-		.then(res => res.json()).then(data => spellcheckerData = data)
+		.then(res => res.json()).then(data => spellcheckData = data)
 		.catch(error => console.log('Lỗi: ', error))
 }
 function randomCustom(length) {
 	return Math.floor(Math.random() * length)
-}
-function Replace(text) {
-	let result = {
-		origin: '',
-		replace: ''
-	}
-	let replaceText = text
-	let originText = text
-	spinnerData.forEach(array => {
-		array.some((string, i, strings) => {
-			var pretext = replaceText
-			replaceText = replaceText.replace(string, `<span class="hn">${strings[randomCustom(strings.length)]}</span>`)
-			originText = originText.replace(string, `<span class="hn">${string}</span>`)
-			if (pretext !== replaceText) return true
-		})
-	})
-	replaceText = replaceText.replace(/\n/gi, "<br />")
-	result.replace = replaceText
-
-	originText = originText.replace(/\n/gi, "<br />")
-	result.origin = originText
-	return result
 }
 function superReplace(text) {
 	let result = {
@@ -125,11 +101,6 @@ function handleSpinResultBox(replaceElement) {
 	})
 }
 function handleSpin() {
-	const x = $('#root .left .input')
-	x.onfocus = function () {
-	}
-	x.onblur = function () {
-	}
 	let numberClick = 0
 	spinButton.onclick = function () {
 		if (!inputBox.textContent) {
@@ -198,46 +169,15 @@ function handleReset() {
 		}
 	}
 }
-function createCustomObject(character, i, characters, currentList) {
-	if (i == characters.length - 1) {
-		currentList[character] = { "_": "" }
-	} else {
-		i++
-		const x = {}
-		x[characters[i]] = ""
-		const y = currentList[character]
-		currentList[character] = { ...x, ...y }
-		createCustomObject(characters[i], i, characters, currentList[character])
-	}
-}
-function handleSpellcheckerData(data) {
-	let newList = {}
-	data.forEach((word, i) => {
-		createCustomObject(word[0], 0, word, newList)
-	})
-	console.log('total: ', newList)
-
-	exportToJsonFile(newList)
-}
 function handleInput() {
+	handleWordCounter()
 	inputBox.oninput = function () {
 		handleWordCounter()
-		// handleSpellcheckerData(data2)
+		const wordList = getWrongWordList()
+		highlightWrongWord(wordList)
 	}
 }
-function exportToJsonFile(jsonData) {
-	let dataStr = JSON.stringify(jsonData);
-	let dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-
-	let exportFileDefaultName = 'data.json';
-
-	let linkElement = document.createElement('a');
-	linkElement.setAttribute('href', dataUri);
-	linkElement.setAttribute('download', exportFileDefaultName);
-	linkElement.click();
-}
 function compareWord(wordList, index, data) {
-	console.log(data, index, data[wordList[index]])
 	if (data[wordList[index]] === undefined) {
 		return false
 	}
@@ -249,27 +189,38 @@ function compareWord(wordList, index, data) {
 		return compareWord(wordList, index, data[wordList[index - 1]])
 	}
 }
-function highlightWrongWord() {
-	spellCheckerButton.onclick = function () {
-		const x = $('#root .right .result .input').innerText
-		const total = x.split(/[\n\r\s]+/g).filter(function (word) {
-			return word.length > 0;
-		});
-		total.forEach((word, i) => {
-			const wordList = word.split('');
-			const isCheck = compareWord(wordList, 0, data4)
-			if (!isCheck) {
-				console.log(word)
+function getWrongWordList() {
+	const currentInputBox = $('#root .left .input').innerText
+	const words = currentInputBox
+		.split(/[^a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựýỳỵỷỹ]+/gi)
+		.map(word => word.toLowerCase())
+		.slice(0, -1)
+	const wrongWords = []
+	words.forEach((word, i) => {
+		const characters = word.split('')
+		const isCheck = compareWord(characters, 0, spellcheckData)
+		if (!isCheck) {
+			if (wrongWords.indexOf(word) < 0) {
+				wrongWords.push(word);
 			}
-		})
-	}
-
+		}
+	})
+	return wrongWords
+}
+function highlightWrongWord(wrongWords) {
+	let currentInputBox = $('#root .left .input').innerHTML
+	wrongWords.forEach(word => {
+		let re = new RegExp(word, 'gi')
+		currentInputBox = currentInputBox
+			.replace(re, `<span class="pv">${word}</span>`)
+	})
+	$('#root .left .input').innerHTML = currentInputBox
 }
 
-// getSpinnerData()
+// getReplaceData()
 handleSpin()
 handleReset()
 handleScroll()
+
+// getSpellcheckData()
 handleInput()
-// getSpellcheckerData()
-highlightWrongWord()
