@@ -4,6 +4,7 @@
   font-family: sans-serif;
   box-sizing: border-box;
   scroll-behavior: smooth;
+  caret-color: black;
 }
 body {
   background-color: #ddd;
@@ -18,19 +19,14 @@ body {
 .pv {
   border-radius: 4px;
   font-size: inherit;
-  /* text-decoration: red wavy underline; */
-  /* text-decoration-thickness: 1%;
-  text-underline-position: auto;
-  text-underline-offset: -1px; */
   background-image: url("./underline.png");
-  background-position: 0 100%;
-  background-size: contain;
+  background-position: 0 97%;
+  background-size: 100% 2px;
   color: #e8665f;
   background-repeat: no-repeat;
 }
 .hn {
-  position: relative;
-  background-color: rgb(129, 252, 191);
+  background-color: rgb(121, 255, 188);
   border-radius: 4px;
   font-size: inherit;
 }
@@ -72,8 +68,6 @@ body {
   color: #fff;
   background-color: var(--main-color);
 }
-
-
 .scrollbar-style::-webkit-scrollbar {
   width: var(--scrollbar-style);
 }

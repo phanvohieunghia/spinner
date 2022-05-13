@@ -5,12 +5,13 @@ const resultBox = $('#root .result')
 const inputBox = $('#root .left .input')
 const spinButton = $('#root .left .btn .spin')
 const resetButton = $('#root .left .btn .reset')
-const spellCheckerButton = $('#root .right .btn .spellcheck')
-// import spinnerData from './replace-data.json' assert {type: 'json'}
+const spellcheckButton = $('#root .right .btn .spellcheck')
 import spinnerData from './replace-data.json' assert {type: 'json'}
 import spellcheckData from './spellcheck-data.json' assert {type: 'json'}
 // let spinnerData
 // let spellcheckData
+let spinClick = false
+let spellcheckClick = false
 
 function getReplaceData() {
 	fetch('https://spinner-uto.vercel.app/replace-data.json')
@@ -38,8 +39,8 @@ function superReplace(text) {
 			let symbolList = [" ", ",", ".", "?", "!"]
 			symbolList.some(symbol => {
 				const preText = replaceText
-				replaceText = replaceText.replace(` ${string}${symbol}`, ` <span class="hn">${strings[randomCustom(strings.length)]}</span>${symbol}`)
-				originText = originText.replace(` ${string}${symbol}`, ` <span class="hn">${string}</span>${symbol}`)
+				replaceText = replaceText.replace(` ${string}${symbol}`, ` <span class="hn" contentEditable="true">${strings[randomCustom(strings.length)]}</span>${symbol}`)
+				originText = originText.replace(` ${string}${symbol}`, ` <span class="hn" contentEditable="true">${string}</span>${symbol}`)
 				return preText !== replaceText
 			})
 			return preText !== replaceText
@@ -47,7 +48,6 @@ function superReplace(text) {
 	})
 	replaceText = replaceText.replace(/\n/gi, "<br />")
 	result.replace = replaceText
-
 	originText = originText.replace(/\n/gi, "<br />")
 	result.origin = originText
 	return result
@@ -94,31 +94,33 @@ function highlightWord(originElement, replaceElement) {
 }
 function handleSpinResultBox(replaceElement) {
 	const replaceList = replaceElement.querySelectorAll('.hn')
-	replaceList.forEach((element, i) => {
+	replaceList.forEach(element => {
 		if (element.nodeName !== 'IMG' && element.childNodes[0].nodeName === '#text' && element.childNodes.length === 1) {
 			element.innerHTML = normalReplace(element.innerText)
 		}
 	})
 }
 function handleSpin() {
-	let numberClick = 0
 	spinButton.onclick = function () {
 		if (!inputBox.textContent) {
 			alert('Nhập nội dung trước khi khi spin')
 			return
 		}
 		const currentInputBox = $('#root .left .input')
-		if (!numberClick) {
+		if (!spinClick) {
 			handleTextNode(currentInputBox)
 			resultBox.innerHTML = ''
 			resultBox.append(currentInputBox.cloneNode(true))
 			highlightWord(currentInputBox, resultBox.childNodes[0])
+			spinClick = true
 			// handleHighlightWord(currentInputBox)
 		} else {
-			handleSpinResultBox(resultBox.childNodes[0])
+			const currentResultBox = $('#root .right .result')
+			currentResultBox.innerHTML = $('#root .left .input').outerHTML
+			const replaceResultBox = $('#root .right .result')
+			handleSpinResultBox(replaceResultBox.childNodes[0])
 		}
 		currentInputBox.scrollTop = resultBox.scrollTop = 0
-		numberClick++
 	}
 }
 function handleWordCounter() {
@@ -166,6 +168,7 @@ function handleReset() {
 		if (confirm(text)) {
 			currentInput.innerHTML = ''
 			currentResult.innerHTML = ''
+			numberClick = 0
 		}
 	}
 }
@@ -173,8 +176,6 @@ function handleInput() {
 	handleWordCounter()
 	inputBox.oninput = function () {
 		handleWordCounter()
-		const wordList = getWrongWordList()
-		highlightWrongWord(wordList)
 	}
 }
 function compareWord(wordList, index, data) {
@@ -191,12 +192,14 @@ function compareWord(wordList, index, data) {
 }
 function getWrongWordList() {
 	const currentInputBox = $('#root .left .input').innerText
-	const words = currentInputBox
-		.split(/[^a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựýỳỵỷỹ]+/gi)
+	let words = currentInputBox
+		.split(/[^a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựýỳỵỷỹ]+/g)
 		.map(word => word.toLowerCase())
-		.slice(0, -1)
+	if (words[words.length - 1].length == 0) {
+		words = words.slice(0, -1)
+	}
 	const wrongWords = []
-	words.forEach((word, i) => {
+	words.forEach(word => {
 		const characters = word.split('')
 		const isCheck = compareWord(characters, 0, spellcheckData)
 		if (!isCheck) {
@@ -210,11 +213,39 @@ function getWrongWordList() {
 function highlightWrongWord(wrongWords) {
 	let currentInputBox = $('#root .left .input').innerHTML
 	wrongWords.forEach(word => {
-		let re = new RegExp(word, 'gi')
-		currentInputBox = currentInputBox
-			.replace(re, `<span class="pv">${word}</span>`)
+		let re = new RegExp(`[ >]${word}`, 'gi')
+		console.log(currentInputBox.match(re))
+		// currentInputBox = currentInputBox.replace(re, ` <span class="pv">${word}</span>`)
 	})
 	$('#root .left .input').innerHTML = currentInputBox
+}
+function removeHighlightWrongWord() {
+	let currentInputBox = $('#root .left .input').innerHTML
+	let spanElement = []
+	currentInputBox.match(/<span class="pv">[a-zA-Z&; _ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựýỳỵỷỹ]+<\/span>/gi)
+		.forEach(element => {
+			if (spanElement.indexOf(element) < 0) {
+				spanElement.push(element);
+			}
+		})
+	spanElement.forEach(element => {
+		let re = new RegExp(`${element}`, 'gi')
+		const temp = element.replace('<span class="pv">', '').replace('</span>', '')
+		currentInputBox = currentInputBox.replace(re, temp)
+	})
+	$('#root .left .input').innerHTML = currentInputBox
+}
+function handleSpellcheck() {
+	spellcheckButton.onclick = () => {
+		const wordList = getWrongWordList()
+		console.log(wordList)
+		if (spellcheckClick) {
+			removeHighlightWrongWord()
+		} else {
+			spellcheckClick = true
+		}
+		highlightWrongWord(wordList)
+	}
 }
 
 // getReplaceData()
@@ -224,3 +255,4 @@ handleScroll()
 
 // getSpellcheckData()
 handleInput()
+handleSpellcheck()
