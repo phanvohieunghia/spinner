@@ -212,10 +212,26 @@ function getWrongWordList() {
 }
 function highlightWrongWord(wrongWords) {
 	let currentInputBox = $('#root .left .input').innerHTML
+	console.log(currentInputBox)
 	wrongWords.forEach(word => {
-		let re = new RegExp(`[ >]${word}`, 'gi')
-		console.log(currentInputBox.match(re))
-		// currentInputBox = currentInputBox.replace(re, ` <span class="pv">${word}</span>`)
+		const re = new RegExp(`[ >]${word}[< \.,!?]`, 'gi')
+		const pickedArray = currentInputBox.match(re)
+		const filterPickedArray = []
+		pickedArray.forEach(item => {
+			if (filterPickedArray.indexOf(item) < 0) {
+				filterPickedArray.push(item)
+			}
+		})
+		filterPickedArray.forEach(item => {
+			const re2 = new RegExp(item, 'gi')
+			if (item.length != word.length) {
+				const re3 = new RegExp(word, 'gi')
+				const temp = item.match(re3)
+				currentInputBox = currentInputBox.replace(re2, `${item[0]}<span class="pv">${temp[0]}</span>${item.substring(word.length + 1)}`)
+			} else {
+				currentInputBox = currentInputBox.replace(re2, `<span class="pv">${item}</span>`)
+			}
+		})
 	})
 	$('#root .left .input').innerHTML = currentInputBox
 }
