@@ -7,10 +7,10 @@ const spinButton = $('#root .left .btn .spin')
 const resetButton = $('#root .left .btn .reset')
 const spellcheckButton = $('#root .left .btn .spellcheck')
 
-import spinnerData from './replace-data.json' assert {type: 'json'}
-import spellcheckData from './spellcheck-data.json' assert {type: 'json'}
-// let spinnerData
-// let spellcheckData
+// import spinnerData from './replace-data.json' assert {type: 'json'}
+// import spellcheckData from './spellcheck-data.json' assert {type: 'json'}
+let spinnerData
+let spellcheckData
 let spinClick = false
 let spellcheckClick = false
 
@@ -272,11 +272,11 @@ function handleSpellcheck() {
 	}
 }
 
-// getReplaceData()
+getReplaceData()
 handleSpin()
 handleReset()
 handleScroll()
 
-// getSpellcheckData()
+getSpellcheckData()
 handleInput()
 handleSpellcheck()
