@@ -4,12 +4,12 @@
   height: 100vh;
   padding: 0 2px;
 }
-#root > div:first-child,
-#root > div:last-child {
+#root .left,
+#root .right {
   width: calc(50% - (var(--screen-split) / 2));
 }
-#root > div:first-child .input,
-#root > div:last-child .result {
+#root .left .input,
+#root .right .result {
   position: relative;
   height: calc(100% - 36px - 8px);
   margin: 8px 4px 0;
@@ -25,12 +25,12 @@
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
   transition: color 0.25s ease-in-out;
 }
-#root > div:first-child .input[placeholder]:empty:before {
+#root .left .input[placeholder]:empty:before {
   content: attr(placeholder);
   -webkit-text-fill-color: #ccc;
 }
-#root > div:first-child .input:hover,
-#root > div:last-child .result:hover {
+#root .left .input:hover,
+#root .right .result:hover {
   color: var(--main-color);
 }
 #root .right .btn,
@@ -38,13 +38,9 @@
   padding: 4px 0;
   text-align: center;
   margin: 0 8px;
-}
-#root .left .btn .word-counter {
-  float: right;
-  padding: 4px 20px;
-}
-#root .left .btn .reset {
-  float: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 #root .right .result > * {
   outline: none;

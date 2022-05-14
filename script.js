@@ -5,7 +5,8 @@ const resultBox = $('#root .result')
 const inputBox = $('#root .left .input')
 const spinButton = $('#root .left .btn .spin')
 const resetButton = $('#root .left .btn .reset')
-const spellcheckButton = $('#root .right .btn .spellcheck')
+const spellcheckButton = $('#root .left .btn .spellcheck')
+
 import spinnerData from './replace-data.json' assert {type: 'json'}
 import spellcheckData from './spellcheck-data.json' assert {type: 'json'}
 // let spinnerData
@@ -168,7 +169,8 @@ function handleReset() {
 		if (confirm(text)) {
 			currentInput.innerHTML = ''
 			currentResult.innerHTML = ''
-			numberClick = 0
+			spinClick = false
+			spellcheckClick = false
 		}
 	}
 }
@@ -176,6 +178,7 @@ function handleInput() {
 	handleWordCounter()
 	inputBox.oninput = function () {
 		handleWordCounter()
+
 	}
 }
 function compareWord(wordList, index, data) {
@@ -212,49 +215,54 @@ function getWrongWordList() {
 }
 function highlightWrongWord(wrongWords) {
 	let currentInputBox = $('#root .left .input').innerHTML
-	console.log(currentInputBox)
+	const re4 = new RegExp('&nbsp;', 'gi')
+	currentInputBox = currentInputBox.replace(re4, ' ')
+	currentInputBox = currentInputBox.replace(/<span class="pv"><\/span>/gi, '')
 	wrongWords.forEach(word => {
 		const re = new RegExp(`[ >]${word}[< \.,!?]`, 'gi')
 		const pickedArray = currentInputBox.match(re)
-		const filterPickedArray = []
-		pickedArray.forEach(item => {
-			if (filterPickedArray.indexOf(item) < 0) {
-				filterPickedArray.push(item)
-			}
-		})
-		filterPickedArray.forEach(item => {
-			const re2 = new RegExp(item, 'gi')
-			if (item.length != word.length) {
-				const re3 = new RegExp(word, 'gi')
-				const temp = item.match(re3)
-				currentInputBox = currentInputBox.replace(re2, `${item[0]}<span class="pv">${temp[0]}</span>${item.substring(word.length + 1)}`)
-			} else {
-				currentInputBox = currentInputBox.replace(re2, `<span class="pv">${item}</span>`)
-			}
-		})
+		if (pickedArray) {
+			const filterPickedArray = []
+			pickedArray.forEach(item => {
+				if (filterPickedArray.indexOf(item) < 0) {
+					filterPickedArray.push(item)
+				}
+			})
+			filterPickedArray.forEach(item => {
+				const re2 = new RegExp(item, 'gi')
+				if (item.length != word.length) {
+					const re3 = new RegExp(word, 'gi')
+					const temp = item.match(re3)
+					currentInputBox = currentInputBox.replace(re2, `${item[0]}<span class="pv">${temp[0]}</span>${item.substring(word.length + 1)}`)
+				} else {
+					currentInputBox = currentInputBox.replace(re2, `<span class="pv">${item}</span>`)
+				}
+			})
+		}
 	})
 	$('#root .left .input').innerHTML = currentInputBox
 }
 function removeHighlightWrongWord() {
 	let currentInputBox = $('#root .left .input').innerHTML
-	let spanElement = []
-	currentInputBox.match(/<span class="pv">[a-zA-Z&; _ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựýỳỵỷỹ]+<\/span>/gi)
-		.forEach(element => {
-			if (spanElement.indexOf(element) < 0) {
-				spanElement.push(element);
+	const filterSpanElement = []
+	const spanElement = currentInputBox.match(/<span class="pv">[a-zA-Z&; _ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựýỳỵỷỹ]+<\/span>/gi)
+	if (spanElement) {
+		spanElement.forEach(element => {
+			if (filterSpanElement.indexOf(element) < 0) {
+				filterSpanElement.push(element);
 			}
 		})
-	spanElement.forEach(element => {
-		let re = new RegExp(`${element}`, 'gi')
-		const temp = element.replace('<span class="pv">', '').replace('</span>', '')
-		currentInputBox = currentInputBox.replace(re, temp)
-	})
-	$('#root .left .input').innerHTML = currentInputBox
+		filterSpanElement.forEach(element => {
+			let re = new RegExp(`${element}`, 'gi')
+			const temp = element.replace('<span class="pv">', '').replace('</span>', '')
+			currentInputBox = currentInputBox.replace(re, temp)
+		})
+		$('#root .left .input').innerHTML = currentInputBox
+	}
 }
 function handleSpellcheck() {
 	spellcheckButton.onclick = () => {
 		const wordList = getWrongWordList()
-		console.log(wordList)
 		if (spellcheckClick) {
 			removeHighlightWrongWord()
 		} else {
