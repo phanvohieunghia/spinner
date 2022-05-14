@@ -20,7 +20,7 @@ function getReplaceData() {
 		.catch(error => console.log('Lỗi: ', error))
 }
 function getSpellcheckData() {
-	fetch('https://spinner-uto.vercel.app/spellcheckerData.json')
+	fetch('https://spinner-uto.vercel.app/spellcheck-data.json')
 		.then(res => res.json()).then(data => spellcheckData = data)
 		.catch(error => console.log('Lỗi: ', error))
 }
