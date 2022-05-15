@@ -178,7 +178,6 @@ function handleInput() {
 	handleWordCounter()
 	inputBox.oninput = function () {
 		handleWordCounter()
-
 	}
 }
 function compareWord(wordList, index, data) {
@@ -215,30 +214,24 @@ function getWrongWordList() {
 }
 function highlightWrongWord(wrongWords) {
 	let currentInputBox = $('#root .left .input').innerHTML
-	const re4 = new RegExp('&nbsp;', 'gi')
-	currentInputBox = currentInputBox.replace(re4, ' ')
-	currentInputBox = currentInputBox.replace(/<span class="pv"><\/span>/gi, '')
-	wrongWords.forEach(word => {
-		const re = new RegExp(`[ >]${word}[< \.,!?]`, 'gi')
-		const pickedArray = currentInputBox.match(re)
-		if (pickedArray) {
-			const filterPickedArray = []
-			pickedArray.forEach(item => {
-				if (filterPickedArray.indexOf(item) < 0) {
-					filterPickedArray.push(item)
-				}
-			})
-			filterPickedArray.forEach(item => {
-				const re2 = new RegExp(item, 'gi')
-				if (item.length != word.length) {
-					const re3 = new RegExp(word, 'gi')
-					const temp = item.match(re3)
-					currentInputBox = currentInputBox.replace(re2, `${item[0]}<span class="pv">${temp[0]}</span>${item.substring(word.length + 1)}`)
-				} else {
-					currentInputBox = currentInputBox.replace(re2, `<span class="pv">${item}</span>`)
-				}
-			})
-		}
+	const re = new RegExp('<[a-z0-9 !;":\.,\-:=()/%]+>', 'gi')
+	const textArray = currentInputBox.split(re).filter(text => text !== '&nbsp;' && text && text.search('http') === -1)
+	const replaceTextArray = []
+	textArray.forEach(text => {
+		let filterTextArray = text
+		wrongWords.forEach((word => {
+			const re2 = new RegExp(word, 'gi')
+			const searchIndex = text.search(re2)
+			if (searchIndex != -1) {
+				const originWord = text.substring(searchIndex, searchIndex + word.length)
+				filterTextArray = filterTextArray
+					.replace(originWord, `<span class="pv">${originWord}</span>`)
+			}
+		}))
+		replaceTextArray.push(filterTextArray)
+	})
+	replaceTextArray.forEach((text, i) => {
+		currentInputBox = currentInputBox.replace(textArray[i], text)
 	})
 	$('#root .left .input').innerHTML = currentInputBox
 }
